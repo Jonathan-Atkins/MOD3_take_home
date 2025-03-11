@@ -4,7 +4,7 @@ class Api::V1::SubscriptionsController < ApplicationController
 
   def index
     subscriptions = Subscription.all
-    render json: SubscriptionSerializer.new(subscriptions), status: :ok
+    render json: SubscriptionSerializer.new(subscriptions)
   end
 
   def show
@@ -12,10 +12,10 @@ class Api::V1::SubscriptionsController < ApplicationController
     render json: SubscriptionSerializer.new(subscription)
   end
 
-  def destroy
+  def update
     subscription = Subscription.find(params[:id])
     subscription.update(canceled: true) 
-    render json: SubscriptionSerializer.new(subscription), status: :ok
+    render json: SubscriptionSerializer.new(subscription)
   end
 
   private

@@ -81,10 +81,10 @@ RSpec.describe 'Tea Subscriptions API', type: :request do
     end
   end
 
-  describe 'DELETE /subscriptions/:id' do
+  describe 'PATCH subscriptions/:id' do
     context 'happy path' do
       it 'can cancel a specific subscription' do
-        delete "/api/v1/subscriptions/#{@subscription1.id}"
+        patch "/api/v1/subscriptions/#{@subscription1.id}"
 
         expect(response).to be_successful
         expect(response.status).to eq(200)
@@ -96,7 +96,7 @@ RSpec.describe 'Tea Subscriptions API', type: :request do
 
     context 'sad path' do
       it 'returns 404 if subscription does not exist' do
-        delete "/api/v1/subscriptions/9999"
+        patch "/api/v1/subscriptions/9999"
 
         expect(response).to have_http_status(404)
 
