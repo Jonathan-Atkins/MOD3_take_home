@@ -29,11 +29,7 @@ RSpec.describe 'Get All Tea Subscriptions', type: :request do
       subscriptions = JSON.parse(response.body, symbolize_names: true)
 
       expect(subscriptions[:data].count).to eq(2)
-
-      expect(subscriptions[:data].first[:attributes]).to include(
-        :title, :price, :canceled, :frequency
-      )
-
+      expect(subscriptions[:data].first[:attributes]).to include(:title, :price, :canceled, :frequency)
       expect(subscriptions[:data].first[:relationships][:customers][:data].count).to eq(2)
       expect(subscriptions[:data].first[:relationships][:teas][:data].count).to eq(1)
     end
@@ -48,14 +44,10 @@ RSpec.describe 'Get All Tea Subscriptions', type: :request do
 
       subscription = JSON.parse(response.body, symbolize_names: true)
 
-      expect(subscription[:data][:attributes]).to include(
-        :title, :price, :canceled, :frequency
-      )
-
+      expect(subscription[:data][:attributes]).to include(:title, :price, :canceled, :frequency)
       expect(subscription[:data][:relationships][:customers][:data].count).to eq(2)
       expect(subscription[:data][:relationships][:customers][:data].first[:id]).to eq(@customer1.id.to_s)
       expect(subscription[:data][:relationships][:customers][:data].last[:id]).to eq(@customer2.id.to_s)
-
       expect(subscription[:data][:relationships][:teas][:data].count).to eq(1)
       expect(subscription[:data][:relationships][:teas][:data].first[:id]).to eq(@tea1.id.to_s)
     end
@@ -64,7 +56,11 @@ RSpec.describe 'Get All Tea Subscriptions', type: :request do
       get "/api/v1/subscriptions/9999"
 
       expect(response).to have_http_status(404)
-      expect(response.body).to include('not found')
+      
+      error = JSON.parse(response.body, symbolize_names: true)
+
+      expect(error[:error].first[:status]).to eq(404)
+      expect(error[:error].first[:title]).to eq("Couldn't find Subscription with 'id'=9999")
     end
   end
 
@@ -83,13 +79,13 @@ RSpec.describe 'Get All Tea Subscriptions', type: :request do
 
     it 'returns empty array when no subscriptions exist' do
       TeaSubscription.delete_all
-      CustomerSubscription.delete_all 
-      Subscription.delete_all  
+      CustomerSubscription.delete_all
+      Subscription.delete_all
 
       get "/api/v1/subscriptions/"
       expect(response).to be_successful
       expect(response.status).to eq(200)
-    
+
       subscriptions = JSON.parse(response.body, symbolize_names: true)
       expect(subscriptions[:data].count).to eq(0)
     end
