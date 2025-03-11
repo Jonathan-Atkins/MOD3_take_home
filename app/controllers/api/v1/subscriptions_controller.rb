@@ -12,6 +12,12 @@ class Api::V1::SubscriptionsController < ApplicationController
     render json: SubscriptionSerializer.new(subscription)
   end
 
+  def destroy
+    subscription = Subscription.find(params[:id])
+    subscription.update(canceled: true) 
+    render json: SubscriptionSerializer.new(subscription), status: :ok
+  end
+
   private
 
   def record_not_found(exception)

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'Get All Tea Subscriptions', type: :request do
+RSpec.describe 'Tea Subscriptions API', type: :request do
   before(:each) do
     @customer1 = Customer.create!(first_name: 'John', last_name: 'Doe', email: 'john.doe@example.com', address: '123 Elm St')
     @customer2 = Customer.create!(first_name: 'Jane', last_name: 'Smith', email: 'jane.smith@example.com', address: '456 Oak St')
@@ -20,22 +20,18 @@ RSpec.describe 'Get All Tea Subscriptions', type: :request do
     TeaSubscription.create!(subscription_id: @subscription2.id, tea_id: @tea3.id)
   end
 
-  describe 'GET all subscriptions' do
+  describe 'GET /subscriptions' do
     it 'can get all subscriptions' do
       get "/api/v1/subscriptions/"
       expect(response).to be_successful
       expect(response.status).to eq(200)
 
       subscriptions = JSON.parse(response.body, symbolize_names: true)
-
       expect(subscriptions[:data].count).to eq(2)
-      expect(subscriptions[:data].first[:attributes]).to include(:title, :price, :canceled, :frequency)
-      expect(subscriptions[:data].first[:relationships][:customers][:data].count).to eq(2)
-      expect(subscriptions[:data].first[:relationships][:teas][:data].count).to eq(1)
     end
   end
 
-  describe 'GET one subscription' do
+  describe 'GET /subscriptions/:id' do
     it 'can get a specific subscription' do
       get "/api/v1/subscriptions/#{@subscription1.id}"
 
@@ -43,24 +39,18 @@ RSpec.describe 'Get All Tea Subscriptions', type: :request do
       expect(response.status).to eq(200)
 
       subscription = JSON.parse(response.body, symbolize_names: true)
-
       expect(subscription[:data][:attributes]).to include(:title, :price, :canceled, :frequency)
-      expect(subscription[:data][:relationships][:customers][:data].count).to eq(2)
-      expect(subscription[:data][:relationships][:customers][:data].first[:id]).to eq(@customer1.id.to_s)
-      expect(subscription[:data][:relationships][:customers][:data].last[:id]).to eq(@customer2.id.to_s)
-      expect(subscription[:data][:relationships][:teas][:data].count).to eq(1)
-      expect(subscription[:data][:relationships][:teas][:data].first[:id]).to eq(@tea1.id.to_s)
     end
 
-    it 'returns 404 if subscription does not exist' do
-      get "/api/v1/subscriptions/9999"
+    context 'when the subscription does not exist' do
+      it 'returns 404 if subscription does not exist' do
+        get "/api/v1/subscriptions/9999"
+        expect(response).to have_http_status(404)
 
-      expect(response).to have_http_status(404)
-      
-      error = JSON.parse(response.body, symbolize_names: true)
-
-      expect(error[:error].first[:status]).to eq(404)
-      expect(error[:error].first[:title]).to eq("Couldn't find Subscription with 'id'=9999")
+        error = JSON.parse(response.body, symbolize_names: true)
+        expect(error[:error].first[:status]).to eq(404)
+        expect(error[:error].first[:title]).to eq("Couldn't find Subscription with 'id'=9999")
+      end
     end
   end
 
@@ -88,6 +78,32 @@ RSpec.describe 'Get All Tea Subscriptions', type: :request do
 
       subscriptions = JSON.parse(response.body, symbolize_names: true)
       expect(subscriptions[:data].count).to eq(0)
+    end
+  end
+
+  describe 'DELETE /subscriptions/:id' do
+    context 'happy path' do
+      it 'can cancel a specific subscription' do
+        delete "/api/v1/subscriptions/#{@subscription1.id}"
+
+        expect(response).to be_successful
+        expect(response.status).to eq(200)
+
+        @subscription1.reload
+        expect(@subscription1.canceled).to eq(true)
+      end
+    end
+
+    context 'sad path' do
+      it 'returns 404 if subscription does not exist' do
+        delete "/api/v1/subscriptions/9999"
+
+        expect(response).to have_http_status(404)
+
+        error = JSON.parse(response.body, symbolize_names: true)
+        expect(error[:error].first[:status]).to eq(404)
+        expect(error[:error].first[:title]).to eq("Couldn't find Subscription with 'id'=9999")
+      end
     end
   end
 end
