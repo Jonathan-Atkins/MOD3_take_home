@@ -5,6 +5,7 @@ class Subscription < ApplicationRecord
   has_many :customers, through: :customer_subscriptions
 
   validates :title, :price, :frequency, presence: true
+  validates :title, uniqueness: true
   validates :price, numericality: { greater_than: 0 }
 
   attribute :canceled, :boolean, default: false
