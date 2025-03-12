@@ -1,19 +1,18 @@
 # Tea Subscription Service
 
 ## Overview
-Tea Subscription Service is a full-stack application that allows customers to subscribe to different tea boxes. It includes a Rails API for managing subscriptions, teas, and customers, as well as a React front-end that interacts with the API to manage and display subscription data.
+SubsTeaTution is a full-stack application that allows customers to cancel or reactivate thier subscription to a tea. 
 
-## Requirements
-At a minimum, the application must include:
-- An endpoint to get all tea subscriptions
-- An endpoint to get information about a specific subscription, including the teas involved and the customers who are subscribed (including those who have been canceled)
-- An endpoint to cancel a specific subscription
+It includes a Rails API for managing subscriptions, teas, and customers, as well as a React front-end that interacts with the API to manage and display subscription data.
 
-Additional features can be added based on time and requirements, but the focus should remain on delivering a clear and easy-to-understand API that a front-end developer can easily consume.
+## Functionality
+What can I do?
+I can:
+- get all tea subscriptions
+- get information about a specific subscription, including the teas involved and the customers.ids who are subscribed (including those who have been canceled)
+- cancel a specific subscription
+- filter subscriptions based on price,customers,and cancellation status
 
-### Optional Features:
-- Integration with the Spoontacular API for additional tea product information.
-- Additional endpoints or features that may improve the functionality of the application.
 
 ## Technologies Used
 - **Backend**: Ruby on Rails (API-only)
