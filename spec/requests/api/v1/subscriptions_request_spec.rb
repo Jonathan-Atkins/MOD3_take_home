@@ -23,6 +23,7 @@ RSpec.describe 'Tea Subscriptions API', type: :request do
   describe 'GET /subscriptions' do
     it 'can get all subscriptions' do
       get "/api/v1/subscriptions/"
+
       expect(response).to be_successful
       expect(response.status).to eq(200)
 
@@ -42,15 +43,14 @@ RSpec.describe 'Tea Subscriptions API', type: :request do
       expect(subscription[:data][:attributes]).to include(:title, :price, :canceled, :frequency)
     end
 
-    context 'when the subscription does not exist' do
-      it 'returns 404 if subscription does not exist' do
-        get "/api/v1/subscriptions/9999"
-        expect(response).to have_http_status(404)
+    it 'returns 404 if subscription does not exist' do
+      get "/api/v1/subscriptions/9999"
 
-        error = JSON.parse(response.body, symbolize_names: true)
-        expect(error[:error].first[:status]).to eq(404)
-        expect(error[:error].first[:title]).to eq("Couldn't find Subscription with 'id'=9999")
-      end
+      expect(response).to have_http_status(404)
+
+      error = JSON.parse(response.body, symbolize_names: true)
+      expect(error[:error].first[:status]).to eq(404)
+      expect(error[:error].first[:title]).to eq("Couldn't find Subscription with 'id'=9999")
     end
   end
 
@@ -73,6 +73,7 @@ RSpec.describe 'Tea Subscriptions API', type: :request do
       Subscription.delete_all
 
       get "/api/v1/subscriptions/"
+
       expect(response).to be_successful
       expect(response.status).to eq(200)
 
@@ -82,28 +83,24 @@ RSpec.describe 'Tea Subscriptions API', type: :request do
   end
 
   describe 'PATCH subscriptions/:id' do
-    context 'happy path' do
-      it 'can cancel a specific subscription' do
-        patch "/api/v1/subscriptions/#{@subscription1.id}"
+    it 'can cancel a specific subscription' do
+      patch "/api/v1/subscriptions/#{@subscription1.id}"
 
-        expect(response).to be_successful
-        expect(response.status).to eq(200)
+      expect(response).to be_successful
+      expect(response.status).to eq(200)
 
-        @subscription1.reload
-        expect(@subscription1.canceled).to eq(true)
-      end
+      @subscription1.reload
+      expect(@subscription1.canceled).to eq(true)
     end
 
-    context 'sad path' do
-      it 'returns 404 if subscription does not exist' do
-        patch "/api/v1/subscriptions/9999"
+    it 'returns 404 if subscription does not exist' do
+      patch "/api/v1/subscriptions/9999"
 
-        expect(response).to have_http_status(404)
+      expect(response).to have_http_status(404)
 
-        error = JSON.parse(response.body, symbolize_names: true)
-        expect(error[:error].first[:status]).to eq(404)
-        expect(error[:error].first[:title]).to eq("Couldn't find Subscription with 'id'=9999")
-      end
+      error = JSON.parse(response.body, symbolize_names: true)
+      expect(error[:error].first[:status]).to eq(404)
+      expect(error[:error].first[:title]).to eq("Couldn't find Subscription with 'id'=9999")
     end
   end
 end

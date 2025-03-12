@@ -14,7 +14,7 @@ class Api::V1::SubscriptionsController < ApplicationController
 
   def update
     subscription = Subscription.find(params[:id])
-    subscription.update(canceled: true) 
+    subscription.update(canceled: !subscription.canceled) 
     render json: SubscriptionSerializer.new(subscription)
   end
 
