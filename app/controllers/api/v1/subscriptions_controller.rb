@@ -4,7 +4,7 @@ class Api::V1::SubscriptionsController < ApplicationController
 
   def index
     subscriptions = Subscription.all
-    render json: SubscriptionSerializer.new(subscriptions), meta: { subscriptions_count: subscriptions.count }
+    render json: SubscriptionSerializer.new(subscriptions, meta: { subscriptions_count: subscriptions.count })
   end
 
   def show

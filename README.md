@@ -22,19 +22,36 @@ I can:
 - **Authentication**: Not required, but can be added if needed
 - **API**: Rails API to handle tea subscriptions, customers, and tea details
 
+
+## DB
+![alt text](image-3.png)
+
+### Relationships
+- A **Customer** can have many **Subscriptions** through **CustomerSubscriptions**.
+- A **Subscription** can have many **Teas** through **TeaSubscriptions**.
+- A **Tea** can be associated with many **Subscriptions** through **TeaSubscriptions**.
+
+
 ## Endpoints
 
 ### 1. `GET /api/v1/subscriptions/`
 - **Description**: Fetches all active tea subscriptions.
 - **Response**: A JSON array of all subscriptions with details on the associated teas and customers.
 
+
+![alt text](image.png)
+
 ### 2. `GET /api/v1/subscriptions/:id`
 - **Description**: Fetches a specific subscription by ID.
 - **Response**: A JSON object with details on the subscription, including teas involved and the customers subscribed.
 
+![alt text](image-1.png)
+
 ### 3. `DELETE /api/v1/subscriptions/:id`
 - **Description**: Cancels the specified subscription.
 - **Response**: A success message and the updated subscription status (canceled).
+
+![alt text](image-2.png)
 
 ## Models
 
@@ -56,10 +73,6 @@ I can:
 - `status`: The current status of the subscription (active or canceled)
 - `frequency`: Frequency of the subscription (e.g., monthly, quarterly, yearly)
 
-### Relationships
-- A **Customer** can have many **Subscriptions** through **CustomerSubscriptions**.
-- A **Subscription** can have many **Teas** through **TeaSubscriptions**.
-- A **Tea** can be associated with many **Subscriptions** through **TeaSubscriptions**.
 
 ## Installation
 
